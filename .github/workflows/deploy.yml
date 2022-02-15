@@ -57,8 +57,8 @@ jobs:
       - name: Deploy in EC2
         env:
             PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
-            HOSTNAME : 44.236.8.201
-            USER_NAME : ubuntu
+            HOSTNAME : ${{ secrets.HOSTNAME  }}
+            USER_NAME : ${{ secrets.USER_NAME  }}
             
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
