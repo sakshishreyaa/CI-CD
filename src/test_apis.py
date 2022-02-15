@@ -11,4 +11,4 @@ print("testing", redis_db.get('key'))
 
 
 client = AsyncIOMotorClient(str(MONGODB_URL))
-print("mongi", client)
+print("mongi", client.config, client.addressable_schedules)
