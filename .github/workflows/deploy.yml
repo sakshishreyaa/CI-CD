@@ -83,7 +83,7 @@ jobs:
     # dep stage when changes pushe to devvel or staging
 
     if: ( github.event.ref == 'refs/heads/develop' || github.event.ref == 'refs/heads/staging')
-    needs: [build ]
+    needs: [build ,test]
     runs-on: ubuntu-latest
     environment:
       name: staging
@@ -94,7 +94,7 @@ jobs:
 
         env:
           PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
-          HOSTNAME : ${{ secrets.HOSTNAME  }}
+          HOSTNAME : ${{ secrets.HOSTNAME  }}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
           USER_NAME : ${{ secrets.USER_NAME  }}
             
         run: |
