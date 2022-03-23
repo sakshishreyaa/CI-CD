@@ -3,7 +3,7 @@ name: CI-CD
 
 on:
   push:
-    branches: [ master ]
+    branches: [ '*' ]
   pull_request:
     branches: [ master ]
 
@@ -82,7 +82,7 @@ jobs:
   DeployStaging:
     # dep stage when changes pushe to devvel or staging
 
-    if: ( github.event_name == 'push' && (github.event.ref == 'refs/heads/develop' || github.event.ref == 'refs/heads/staging'))
+    if: ( github.event.ref == 'refs/heads/develop' || github.event.ref == 'refs/heads/staging')
     needs: [build ]
     runs-on: ubuntu-latest
     environment:
