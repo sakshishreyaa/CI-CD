@@ -5,7 +5,7 @@ on:
   push:
     branches: [ '*' ]
   pull_request:
-    branches: [ master ]
+    branches: [ prod ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -50,13 +50,14 @@ jobs:
         cd src
         python3 test_apis.py
 
-  DeployTesting:
-    # deploy testing when pull req on master
-    if: github.event_name == 'pull_request'
-    needs: [build , test]
+  DeployStaging:
+    # dep stage when changes pushe to staging
+
+    if: github.event.ref == 'refs/heads/staging'
+    needs: [build,test]
     runs-on: ubuntu-latest
     environment:
-      name: testing
+      name: staging
     
     steps:
       - uses: actions/checkout@v2 
@@ -79,14 +80,14 @@ jobs:
             git pull origin master &&
             docker-compose -f docker-compose.yml up -d --build 
           '
-  DeployStaging:
-    # dep stage when changes pushe to devvel or staging
+  DeployProd:
+    # dep stage when changes pushed/merged to prod after integration testing has been done on staging and unit test successfull in testing
 
-    if: ( github.event.ref == 'refs/heads/develop' || github.event.ref == 'refs/heads/staging')
-    needs: [build ,test]
+    if: github.event.ref == 'refs/heads/prod'
+    needs: [build,test,deploytesting]
     runs-on: ubuntu-latest
     environment:
-      name: staging
+      name: prod
     
     steps:
       - uses: actions/checkout@v2 
@@ -94,7 +95,7 @@ jobs:
 
         env:
           PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
-          HOSTNAME : ${{ secrets.HOSTNAME  }}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
+          HOSTNAME : ${{ secrets.HOSTNAME  }}
           USER_NAME : ${{ secrets.USER_NAME  }}
             
         run: |
