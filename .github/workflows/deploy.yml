@@ -51,12 +51,13 @@ jobs:
   Deploy:
     needs: [build , test]
     runs-on: ubuntu-latest
+    environment:
+      name: testing
     
     steps:
       - uses: actions/checkout@v2 
       - name: Deploy in EC2
-        environment:
-          name: testing
+
         env:
           PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
           HOSTNAME : ${{ secrets.HOSTNAME  }}
