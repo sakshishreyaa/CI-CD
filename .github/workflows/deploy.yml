@@ -4,6 +4,8 @@ name: CI-CD
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -49,6 +51,8 @@ jobs:
         python3 test_apis.py
 
   DeployTesting:
+    # deploy testing when pull req on master
+    if: github.event_name == 'pull_request'
     needs: [build , test]
     runs-on: ubuntu-latest
     environment:
@@ -76,6 +80,8 @@ jobs:
             docker-compose -f docker-compose.yml up -d --build 
           '
   DeployStaging:
+    # dep stage when changes pushe to devvel or staging
+    if: (github.event.ref == 'refs/heads/develop' || github.event.ref == 'refs/heads/staging')
     needs: [build , deploytesting]
     runs-on: ubuntu-latest
     environment:
