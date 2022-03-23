@@ -81,9 +81,9 @@ jobs:
           '
   DeployStaging:
     # dep stage when changes pushe to devvel or staging
-    
+
     if: ( github.event_name == 'push' && (github.event.ref == 'refs/heads/develop' || github.event.ref == 'refs/heads/staging'))
-    needs: [build , deploytesting]
+    needs: [build ]
     runs-on: ubuntu-latest
     environment:
       name: staging
