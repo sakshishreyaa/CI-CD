@@ -84,7 +84,7 @@ jobs:
     # dep stage when changes pushed/merged to prod after integration testing has been done on staging and unit test successfull in testing
 
     if: github.event.ref == 'refs/heads/prod'
-    needs: [build,test,deploytesting]
+    needs: [build,test,deploystaging]
     runs-on: ubuntu-latest
     environment:
       name: prod
