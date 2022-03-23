@@ -48,11 +48,38 @@ jobs:
         cd src
         python3 test_apis.py
 
-  Deploy:
+  DeployTesting:
     needs: [build , test]
     runs-on: ubuntu-latest
     environment:
       name: testing
+    
+    steps:
+      - uses: actions/checkout@v2 
+      - name: Deploy in EC2
+
+        env:
+          PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
+          HOSTNAME : ${{ secrets.HOSTNAME  }}
+          USER_NAME : ${{ secrets.USER_NAME  }}
+            
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+          
+          
+            cd /home/ubuntu/CI-CD &&
+            git checkout master &&
+            git fetch --all &&
+            git reset --hard origin/master &&
+            git pull origin master &&
+            docker-compose -f docker-compose.yml up -d --build 
+          '
+  DeployStaging:
+    needs: [build , deploytesting]
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
     
     steps:
       - uses: actions/checkout@v2 
